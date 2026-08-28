@@ -1,31 +1,98 @@
-<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notice Board | Indas-II Gram Panchayat</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;color:#351d1d;background:#fff}
-header{padding:15px 5%;display:flex;align-items:center;gap:14px;border-bottom:1px solid #eee}
-.logo{width:58px;height:58px;border-radius:50%;object-fit:contain;border:2px solid #8b4a4a}
-h1{font-size:24px;margin:0;color:#4a2020} header p{margin:4px 0;color:#555}
-nav{margin-left:auto} nav a{text-decoration:none;color:#333;margin-left:20px}
-.hero{padding:45px 20px;text-align:center;color:#fff;background:linear-gradient(125deg,#3d2020,#6d3030)}
-.hero h2{font-size:40px;margin:0 0 12px} .hero b{font-size:28px;color:#f1cc76}
-.wrap{max-width:1100px;margin:35px auto 55px;padding:0 18px}
-.card{border:1px solid #eadede;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px #0001}
-.head{padding:18px 22px;background:#f8f0f0;color:#762d2d;font-size:21px;font-weight:bold}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f9f9f9;color:#351d1d}
+.header{background:#fff;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:58px;height:58px;border-radius:50%;border:2px solid #8b4a4a;object-fit:contain;background:#fff}
+.brand h1{font-size:24px;margin:0;color:#4a2020}
+.brand p{margin:4px 0 0;font-size:15px;color:#555}
+.nav a{margin-left:28px;text-decoration:none;color:#333;font-weight:500}
+.hero{padding:42px 20px;text-align:center;color:#fff;background:linear-gradient(125deg,#3d2020,#6d3030,#4a2525)}
+.hero h2{font-size:40px;margin:0 0 10px}
+.hero b{font-size:27px;color:#f1cc76}
+.container{max-width:1000px;margin:35px auto 55px;padding:0 18px;text-align:center}
+h3{color:#4a154b;margin-bottom:25px;border-bottom:2px solid #4a154b;display:inline-block;padding-bottom:5px}
+.notice-card{background:#fff;border-left:5px solid #6b1d2f;border-radius:6px;padding:20px;margin-bottom:20px;text-align:left;box-shadow:0 4px 6px rgba(0,0,0,.05)}
+.notice-date{font-size:12px;color:#718096;font-weight:bold;margin-bottom:8px}
+.notice-title{font-size:16px;color:#2d3748;font-weight:bold;margin-bottom:10px}
+.notice-desc{font-size:14px;color:#4a5568;line-height:1.5}
+.btn-download{background:#2b6cb0;color:#fff;text-decoration:none;padding:8px 14px;border-radius:4px;font-size:12px;font-weight:bold;display:inline-block;margin-top:10px}
+.doc-title{font-size:18px;color:#762d2d;font-weight:bold;margin:28px 0 12px}
+.doc-box{background:#fff;border:1px solid #eadede;border-radius:10px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.08)}
 iframe{width:100%;height:850px;border:0;display:block}
-.actions{text-align:center;padding:25px} .btn{display:inline-block;background:#762d2d;color:#fff;text-decoration:none;padding:12px 26px;border-radius:5px;margin:5px;font-size:13px;font-weight:bold}
+.actions{text-align:center;padding:22px}
+.btn{display:inline-block;background:#762d2d;color:#fff;text-decoration:none;padding:10px 18px;border-radius:4px;font-size:12px;font-weight:bold;margin:4px}
 .back{background:#555}
-footer{background:#722d2d;color:#fff;padding:20px 5%;font-size:13px}
-@media(max-width:650px){h1{font-size:17px}.logo{width:45px;height:45px}nav a{font-size:12px;margin-left:8px}.hero h2{font-size:29px}iframe{height:700px}}
-</style></head>
+.footer{background:#722d2d;color:#fff;padding:20px 5%;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13px;border-top:4px solid #d9b45d}
+@media(max-width:650px){
+.header{padding:12px 4%}.brand h1{font-size:17px}.logo{width:45px;height:45px}
+.nav a{margin-left:8px;font-size:12px}.hero h2{font-size:29px}.hero b{font-size:21px}
+iframe{height:700px}.container{padding:0 12px}
+}
+</style>
+</head>
 <body>
-<header><img class="logo" src="logo.jpg" alt="Logo"><div><h1>INDAS-II GRAM PANCHAYAT</h1><p>Citizen Service Portal</p></div>
-<nav><a href="index.html">Home</a><a href="forms.html">Application Forms</a><a href="contact.html">Contact Us</a></nav></header>
-<section class="hero"><h2>INDAS-II GRAM PANCHAYAT</h2><b>NOTICE BOARD</b></section>
-<section class="wrap"><div class="card"><div class="head">📢 Latest Notices</div>
-<iframe src="https://docs.google.com/document/d/1UwHQ-zqeQPSju8_Wk1kMHs14ZQsLhK1kE8EuFE-Bdno/preview" title="Indas-II Gram Panchayat Notice Board"></iframe>
-<div class="actions"><a class="btn" href="https://docs.google.com/document/d/1UwHQ-zqeQPSju8_Wk1kMHs14ZQsLhK1kE8EuFE-Bdno/preview" target="_blank">OPEN NOTICE</a>
-<a class="btn back" href="index.html">← BACK TO HOME</a></div></div></section>
-<footer>Indas-II Gram Panchayat, Indas Block, Bankura, West Bengal | Phone: 9635537763 | Email: pradhanindas2gp@gmail.com</footer>
-</body></html>
+
+<header class="header">
+  <div class="brand">
+    <img class="logo" src="logo.jpg" alt="Indas-II Gram Panchayat Logo">
+    <div>
+      <h1>INDAS-II GRAM PANCHAYAT</h1>
+      <p>Citizen Service Portal</p>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="forms.html">Application Forms</a>
+    <a href="contact.html">Contact Us</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>INDAS-II GRAM PANCHAYAT</h2>
+  <b>NOTICE BOARD</b>
+</section>
+
+<div class="container">
+  <h3>LATEST NOTICES &amp; ANNOUNCEMENTS / নোটিশ ও ঘোষণা</h3>
+
+  <!-- এই অংশটি আপনার Google Docs-এর Live Notice Board -->
+  <div class="doc-title">📢 সর্বশেষ নোটিশ</div>
+  <div class="doc-box">
+    <iframe
+      src="https://docs.google.com/document/d/1UwHQ-zqeQPSju8_Wk1kMHs14ZQsLhK1kE8EuFE-Bdno/preview"
+      title="Indas-II Gram Panchayat Notice Board">
+    </iframe>
+
+    <div class="actions">
+      <a class="btn" href="https://docs.google.com/document/d/1UwHQ-zqeQPSju8_Wk1kMHs14ZQsLhK1kE8EuFE-Bdno/preview" target="_blank">
+        OPEN NOTICE
+      </a>
+      <a class="btn back" href="index.html">← BACK TO HOME</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div>
+    <strong>INDAS-II GRAM PANCHAYAT</strong><br>
+    Indas-II Gram Panchayat, Indas Block,<br>
+    Bankura, West Bengal
+  </div>
+  <div>
+    <strong>CONTACT US</strong><br>
+    Phone: 9635537763<br>
+    Email: pradhanindas2gp@gmail.com
+  </div>
+  <div>© Indas-II Gram Panchayat. All Rights Reserved.</div>
+</footer>
+
+</body>
+</html>
