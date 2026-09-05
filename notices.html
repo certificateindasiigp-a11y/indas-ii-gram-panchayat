@@ -35,6 +35,14 @@ iframe{width:100%;height:380px;border:0;display:block}
 .back{background:#555}
 .back:hover{background:#333}
 
+/* সার্চ বার ও কন্ট্রোল বাটন স্টাইল */
+.search-control-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.search-input{flex:1;min-width:240px;padding:11px 16px;border:1px solid #d4c2c2;border-radius:6px;font-size:14px;outline:none;background:#fff;transition:border-color .2s}
+.search-input:focus{border-color:#762d2d;box-shadow:0 0 5px rgba(118,45,45,.2)}
+.btn-toggle-all{background:#4a154b;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer;transition:background-color .2s}
+.btn-toggle-all:hover{background:#350f36}
+.no-results{display:none;text-align:center;padding:25px;background:#fff;border:1px solid #ebdada;border-radius:8px;color:#762d2d;font-weight:bold}
+
 /* নোটিশ ও সার্টিফিকেট অ্যাকর্ডিয়ন স্টাইল */
 .notice-accordion{margin-bottom:40px;display:flex;flex-direction:column;gap:14px}
 .notice-item{background:#fff;border-radius:8px;border:1px solid #e0d0d0;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04);transition:all .3s ease}
@@ -60,6 +68,8 @@ iframe{width:100%;height:380px;border:0;display:block}
   .nav a{margin-left:8px;font-size:12px}.hero h2{font-size:22px}.hero b{font-size:16px}
   iframe{height:280px}.container{padding:0 12px}
   .notice-header{font-size:14px;padding:14px}
+  .search-control-bar{flex-direction:column}
+  .btn-toggle-all{width:100%}
 }
 </style>
 </head>
@@ -111,67 +121,77 @@ iframe{width:100%;height:380px;border:0;display:block}
     <h3>IMPORTANT NOTICES &amp; CERTIFICATE DETAILS / নোটিশ ও নির্দেশিকা</h3>
   </div>
 
-  <div class="notice-accordion">
+  <!-- লাইভ সার্চ বার ও অল টগল বাটন -->
+  <div class="search-control-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 যে কোনো নোটিশ বা সার্টিফিকেট খুঁজুন (যেমন: জন্ম, EWS, ইনকাম, ইত্যাদি)..." onkeyup="searchNotices()">
+    <button type="button" class="btn-toggle-all" id="toggleAllBtn" onclick="toggleAllNotices()">সব নোটিশ একসাথে খুলুন</button>
+  </div>
 
-    <!-- 1. জন্ম ও মৃত্যু নিবন্ধন (এক নম্বরে আনা হলো) -->
+  <div id="noResults" class="no-results">
+    ❌ আপনার খোঁজা তথ্যের সাথে কোনো নোটিশ মেলেনি!
+  </div>
+
+  <div class="notice-accordion" id="accordionContainer">
+
+    <!-- 1. জন্ম ও মৃত্যু নিবন্ধন -->
     <div class="notice-item">
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Registration</span>
-          <span>📑 জন্ম ও মৃত্যু নিবন্ধনের নির্দেশিকা ও বিলম্বের নিয়মাবলী</span>
+          <span>📑 ১. জন্ম ও মৃত্যু নিবন্ধনের নির্দেশিকা ও বিলম্বের নিয়মাবলী</span>
         </div>
         <span class="arrow">▼</span>
       </div>
       <div class="notice-body">
         <p><strong>* জন্ম ও মৃত্যু সংক্রান্ত সকল আবেদন অনলাইনের মাধ্যমে করতে হবে এবং অরিজিনাল ডকুমেন্টস আপলোড করতে হবে। আবেদন সম্পন্ন করার পর প্রয়োজনীয় কাগজপত্রের একটি সেট পঞ্চায়েত অফিসে জমা দিতে হবে।</strong></p>
 
-        <h4>১. জন্ম সার্টিফিকেট (সাধারণ নিয়ম - ২১ দিনের মধ্যে):</h4>
+        <h4>১. জন্ম সার্টিফিকেট (সাধারণ নিয়ম - ২১ দিনের মধ্যে):</h4>
         <ul>
           <li><strong>জন্মের প্রমাণপত্র (Proof of Birth):</strong> (I) ফর্ম ১ (জন্ম সংক্রান্ত রিপোর্ট): তথ্য প্রদানকারী (Informant), ANM/ASHA-এর স্বাক্ষর ও সিলযুক্ত এবং রেজিস্ট্রার/সাব-রেজিস্ট্রার কর্তৃক যথাযথভাবে স্বাক্ষরিত ও সিলযুক্ত হতে হবে। (II) Hospital Discharge certificate (যদি থাকে)। (III) রেজিস্টার্ড ডাক্তার-এর সার্টিফিকেট।</li>
-          <li><strong>পরিচয়পত্র (Identity Proof):</strong> আবেদনকারী / পিতামাতার পরিচয়পত্র (ভোটার কার্ড)।</li>
-          <li><strong>অন্যান্য সহায়ক নথিপত্র (Other Supporting Documents):</strong> প্রয়োজনীয় অন্যান্য কাগজ বা প্রমাণপত্র।</li>
+          <li><strong>পরিচয়পত্র (Identity Proof):</strong> আবেদনকারী / পিতামাতার পরিচয়পত্র (ভোটার কার্ড)।</li>
+          <li><strong>অন্যান্য সহায়ক নথিপত্র (Other Supporting Documents):</strong> প্রয়োজনীয় অন্যান্য কাগজ বা প্রমাণপত্র।</li>
         </ul>
 
         <h4>২. জন্ম সার্টিফিকেট (বিলম্বিত ক্ষেত্রে):</h4>
         <ul>
-          <li>উপরের সাধারণ নথিসমূহ (ফর্ম ১ / ডিসচার্জ সার্টিফিকেট / ডাক্তারের সার্টিফিকেট + পরিচয়পত্র)।</li>
+          <li>উপরের সাধারণ নথিসমূহ (ফর্ম ১ / ডিসচার্জ সার্টিফিকেট / ডাক্তারের সার্টিফিকেট + পরিচয়পত্র)।</li>
           <li>জমা-কৃত ফি-এর চালানের কপি।</li>
-          <li>প্রয়োজনীয় অন্যান্য সহায়ক নথিপত্র।</li>
+          <li>প্রয়োজনীয় অন্যান্য সহায়ক নথিপত্র।</li>
         </ul>
 
-        <h4>৩. মৃত্যু সার্টিফিকেট (সাধারণ নিয়ম - ২১ দিনের মধ্যে):</h4>
+        <h4>৩. মৃত্যু সার্টিফিকেট (সাধারণ নিয়ম - ২১ দিনের মধ্যে):</h4>
         <ul>
-          <li><strong>মৃত্যুর প্রমাণপত্র (Proof of Death):</strong> (I) ফর্ম ২ (মৃত্যু সংক্রান্ত রিপোর্ট): তথ্য প্রদানকারী (Informant), ANM/ASHA-এর স্বাক্ষর ও সিলযুক্ত এবং রেজিস্ট্রার/সাব-রেজিস্ট্রার কর্তৃক যথাযথভাবে স্বাক্ষরিত ও সিলযুক্ত হতে হবে। (II) রেজিস্টার্ড ডাক্তার-এর সার্টিফিকেট-এ মৃত ব্যক্তির মৃত্যুর কারণ, স্থান ও সময় অবশ্যই উল্লেখ থাকতে হবে।</li>
-          <li><strong>পরিচয়পত্র (Identity Proof):</strong> আবেদনকারী / পিতামাতার পরিচয়পত্র (ভোটার কার্ড)।</li>
-          <li>মৃত ব্যক্তির বার্নিং / কবর দেওয়ার সার্টিফিকেট।</li>
-          <li>অন্যান্য সহায়ক নথিপত্র।</li>
+          <li><strong>মৃত্যুর প্রমাণপত্র (Proof of Death):</strong> (I) ফর্ম ২ (মৃত্যু সংক্রান্ত রিপোর্ট): তথ্য প্রদানকারী (Informant), ANM/ASHA-এর স্বাক্ষর ও সিলযুক্ত এবং রেজিস্ট্রার/সাব-রেজিস্ট্রার কর্তৃক যথাযথভাবে স্বাক্ষরিত ও সিলযুক্ত হতে হবে। (II) রেজিস্টার্ড ডাক্তার-এর সার্টিফিকেট-এ মৃত ব্যক্তির মৃত্যুর কারণ, স্থান ও সময় অবশ্যই উল্লেখ থাকতে হবে।</li>
+          <li><strong>পরিচয়পত্র (Identity Proof):</strong> আবেদনকারী / পিতামাতার পরিচয়পত্র (ভোটার কার্ড)।</li>
+          <li>মৃত ব্যক্তির বার্নিং / কবর দেওয়ার সার্টিফিকেট।</li>
+          <li>অন্যান্য সহায়ক নথিপত্র।</li>
         </ul>
 
         <h4>৪. মৃত্যু সার্টিফিকেট (বিলম্বিত ক্ষেত্রে):</h4>
         <ul>
-          <li>ফর্ম ২, রেজিস্টার্ড ডাক্তারের সার্টিফিকেট, মৃত ব্যক্তি ও তথ্য প্রদানকারীর পরিচয়পত্র (ভোটার কার্ড)।</li>
+          <li>ফর্ম ২, রেজিস্টার্ড ডাক্তারের সার্টিফিকেট, মৃত ব্যক্তি ও তথ্য প্রদানকারীর পরিচয়পত্র (ভোটার কার্ড)।</li>
           <li>জমা-কৃত ফি-এর চালানের কপি।</li>
-          <li>মৃত ব্যক্তির বার্নিং / কবর দেওয়ার সার্টিফিকেট (যদি থাকে)।</li>
+          <li>মৃত ব্যক্তির বার্নিং / কবর দেওয়ার সার্টিফিকেট (যদি থাকে)।</li>
           <li>মৃত ব্যক্তির রেশন কার্ড সারেন্ডার-এর সার্টিফিকেট।</li>
         </ul>
 
-        <h4>⚠️ বিলম্বের সময়সীমা, ফি এবং অনুমতি সংক্রান্ত নিয়মাবলী:</h4>
+        <h4>⚠️ বিলম্বের সময়সীমা, ফি এবং অনুমতি সংক্রান্ত নিয়মাবলী:</h4>
         <ul>
-          <li><strong>২১ দিনের বেশি কিন্তু ৩০ দিনের মধ্যে:</strong> ২০ টাকা [কোনো অনুমতির প্রয়োজন নেই]।</li>
+          <li><strong>২১ দিনের বেশি কিন্তু ৩০ দিনের মধ্যে:</strong> ২০ টাকা [কোনো অনুমতির প্রয়োজন নেই]।</li>
           <li><strong>৩০ দিনের বেশি কিন্তু ১ বছরের মধ্যে:</strong> ৫০ টাকা [জেলা রেজিস্ট্রার (District Registrar)-এর অনুমতি আদেশ]।</li>
           <li><strong>১ বছরের বেশি কিন্তু ২ বছরের মধ্যে:</strong> ১০০ টাকা [এক্সিকিউটিভ ম্যাজিস্ট্রেট (Ex-Magistrate)-এর অনুমতি আদেশ]।</li>
-          <li><strong>২ বছরের বেশি সময় অতিবাহিত হলে:</strong> ১০০ টাকা [প্রথম শ্রেণীর বিচার বিভাগীয় ম্যাজিস্ট্রেট (First Class Judicial Magistrate)-এর অনুমতি আদেশ]।</li>
+          <li><strong>২ বছরের বেশি সময় অতিবাহিত হলে:</strong> ১০০ টাকা [প্রথম শ্রেণীর বিচার বিভাগীয় ম্যাজিস্ট্রেট (First Class Judicial Magistrate)-এর অনুমতি আদেশ]।</li>
         </ul>
         <a class="btn-action" href="https://janma-mrityutathya.wb.gov.in/" target="_blank">অনলাইন আবেদন পোর্টাল (Janma-Mrityu Tathya) →</a>
       </div>
     </div>
 
-    <!-- 2. গৃহ নির্মাণ অনুমতি (Building Permission - দুই নম্বরে আনা হলো) -->
+    <!-- 2. গৃহ নির্মাণ অনুমতি -->
     <div class="notice-item">
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Permission</span>
-          <span>🏗️ গৃহ নির্মাণ অনুমতির (Building Permission) জন্য নির্দেশিকা</span>
+          <span>🏗️ ২. গৃহ নির্মাণ অনুমতির (Building Permission) জন্য নির্দেশিকা</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -182,7 +202,7 @@ iframe{width:100%;height:380px;border:0;display:block}
           <li>আবেদনকারীর নিজস্ব নামে বাস্তু বা ভিটার পরচা (১ কপি স্বপ্রত্যয়িত জেরক্স)।</li>
           <li>আমিন দ্বারা জরিপের নথি (বাস্তুটি যৌথ মালিকানা ভুক্ত হলে যৌথ মালিকগণের স্বাক্ষর ও পার্শ্ববর্তী দাগের মালিকগণের স্বাক্ষর সহ ১ কপি স্বপ্রত্যয়িত জেরক্স)।</li>
           <li>আবেদনকারীর ভোটার কার্ডের ১ কপি স্বপ্রত্যয়িত জেরক্স।</li>
-          <li>আবেদনকারীর আধার কার্ডের ১ কপি স্বপ্রত্যয়িত জেরক্স।</li>
+          <li>আবেদনকারীর পরিচয়পত্রের ১ কপি স্বপ্রত্যয়িত জেরক্স।</li>
           <li>রেজিস্টার্ড সিভিল ইঞ্জিনিয়ার কর্তৃক সীল ও স্বাক্ষর করা গৃহের নকশা/প্ল্যান (২ কপি আসল/original)।</li>
           <li>রেজিস্টার্ড সিভিল ইঞ্জিনিয়ার কর্তৃক সীল ও স্বাক্ষর করা গৃহটি নির্মাণের আনুমানিক ব্যয় বা এস্টিমেট (১ কপি আসল/original)।</li>
           <li>হালনাগাদ ভূমিসংস্কার খাজনা (BL&amp;LRO Tax) এর রশিদের ১ কপি স্বপ্রত্যয়িত জেরক্স।</li>
@@ -197,7 +217,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>🔥 Burning / Death Certificate সংক্রান্ত জরুরি নোটিশ</span>
+          <span>🔥 ৩. Burning / Death Certificate সংক্রান্ত জরুরি নোটিশ</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -206,8 +226,8 @@ iframe{width:100%;height:380px;border:0;display:block}
         <p>গ্রাম পঞ্চায়েত এলাকার মধ্যে মৃত ব্যক্তির ক্ষেত্রে Burning/Cremation Certificate বা ডেথ রিপোর্টের জন্য নিম্নলিখিত নথি সহ পঞ্চায়েত কার্যালয়ে যোগাযোগ করুন:</p>
         <ul>
           <li>শ্মশান ঘাটের রসিদ বা ডাক্তারের দেওয়া ডেথ সার্টিফিকেট (যদি থাকে)।</li>
-          <li>মৃত ব্যক্তির আধার কার্ড / ভোটার কার্ডের জেরক্স।</li>
-          <li>আবেদনকারীর (পরিবারের সদস্য) আধার কার্ড ও সম্পর্ক প্রমাণের নথি।</li>
+          <li>মৃত ব্যক্তির পরিচয়পত্রের জেরক্স।</li>
+          <li>আবেদনকারীর (পরিবারের সদস্য) পরিচয়পত্র ও সম্পর্ক প্রমাণের নথি।</li>
         </ul>
         <a class="btn-action" href="forms.html">আবেদন ফর্ম ডাউনলোড / জমা দিন →</a>
       </div>
@@ -218,7 +238,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>🏠 Residential Certificate (বাসস্থান শংসাপত্র) সংক্রান্ত নোটিশ</span>
+          <span>🏠 ৪. Residential Certificate (বাসস্থান শংসাপত্র) সংক্রান্ত নোটিশ</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -226,7 +246,7 @@ iframe{width:100%;height:380px;border:0;display:block}
         <h4>বাসস্থান শংসাপত্র পাওয়ার নিয়মাবলী:</h4>
         <p>ইন্দাস-২ গ্রাম পঞ্চায়েতের স্থায়ী বাসিন্দা হিসেবে শংসাপত্র পেতে অনলাইনে বা অফিসে আবেদন করুন।</p>
         <ul>
-          <li>আবেদনকারীর নিজস্ব আধার কার্ড ও ভোটার কার্ডের জেরক্স।</li>
+          <li>আবেদনকারীর নিজস্ব পরিচয়পত্র (ভোটার কার্ড ইত্যাদি)।</li>
           <li>সাম্প্রতিক বাড়ির পঞ্চায়েত ট্যাক্স রসিদ।</li>
           <li>১ কপি পাসপোর্ট সাইজ ছবি।</li>
         </ul>
@@ -239,7 +259,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>💰 Income Certificate (বার্ষিক আয়ের শংসাপত্র) নোটিশ</span>
+          <span>💰 ৫. Income Certificate (বার্ষিক আয়ের শংসাপত্র) নোটিশ</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -248,7 +268,7 @@ iframe{width:100%;height:380px;border:0;display:block}
         <p>স্কলারশিপ, রেশন কার্ড বা অন্যান্য সরকারি প্রকল্পের জন্য আয়ের প্রমাণপত্র পেতে নিচের নথি প্রয়োজন:</p>
         <ul>
           <li>পারিবারিক আয়ের স্বপক্ষে স্বঘোষিত ঘোষণাপত্র (Self Declaration)।</li>
-          <li>আবেদনকারী ও অভিভাবকের আধার কার্ড।</li>
+          <li>আবেদনকারী ও অভিভাবকের পরিচয়পত্র।</li>
           <li>জমির দলিল/পর্চা বা বেতন স্লিপ (প্রযোজ্য ক্ষেত্রে)।</li>
         </ul>
         <a class="btn-action" href="forms.html">আবেদন করুন →</a>
@@ -260,7 +280,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>📜 Caste Certificate (SC / ST / OBC শংসাপত্র ভেরিফিকেশন)</span>
+          <span>📜 ৬. Caste Certificate (SC / ST / OBC শংসাপত্র ভেরিফিকেশন)</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -268,7 +288,7 @@ iframe{width:100%;height:380px;border:0;display:block}
         <h4>জাতিগত শংসাপত্র ভেরিফিকেশন সংক্রান্ত জরুরি নোটিশ:</h4>
         <p>অনলাইনে Caste Certificate আবেদনের পর পঞ্চায়েত স্তরীয় ভেরিফিকেশনের জন্য নিম্নলিখিত নথিগুলি জমা দিন:</p>
         <ul>
-          <li>আবেদনকারীর আধার কার্ড ও ভোটার কার্ডের জেরক্স কপি।</li>
+          <li>আবেদনকারীর ভোটার কার্ড ও পরিচয়পত্রের জেরক্স কপি।</li>
           <li>বয়সের প্রমাণপত্র / মাধ্যমিকের অ্যাডমিট কার্ডের জেরক্স কপি।</li>
           <li>নিজের / রক্ত সম্পর্কের জাতিগত শংসাপত্র (Caste Certificate) – এর জেরক্স কপি।</li>
           <li>পঞ্চায়েত ট্যাক্স রসিদের জেরক্স কপি।</li>
@@ -282,7 +302,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>📑 NCL Certificate (Non-Creamy Layer শংসাপত্র) নির্দেশিকা</span>
+          <span>📑 ৭. NCL Certificate (Non-Creamy Layer শংসাপত্র) নির্দেশিকা</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -291,7 +311,7 @@ iframe{width:100%;height:380px;border:0;display:block}
         <p>কেন্দ্রীয় ও রাজ্য স্তরের চাকরি এবং শিক্ষাপ্রতিষ্ঠানে সংরক্ষণের সুবিধার জন্য NCL সার্টিফিকেট পেতে পঞ্চায়েতে জমা দিন:</p>
         <ul>
           <li>মূল OBC সার্টিফিকেট-এর স্বপ্রত্যয়িত জেরক্স কপি।</li>
-          <li>আবেদনকারী এবং পিতা-মাতার আধার কার্ড ও ভোটার কার্ডের জেরক্স।</li>
+          <li>আবেদনকারী এবং পিতা-মাতার পরিচয়পত্র ও ভোটার কার্ডের জেরক্স।</li>
           <li>বিগত ৩ অর্থবর্ষের পারিবারিক বাৎসরিক আয়ের প্রমাণপত্র (IT Return বা স্যালারি সার্টিফিকেট বা স্বঘোষণা)।</li>
           <li>হালনাগাদ পঞ্চায়েত ট্যাক্স রসিদের জেরক্স।</li>
           <li>পিতা-মাতার চাকরির সার্ভিস বুক বা পদমর্যাদা সংক্রান্ত নথি (প্রযোজ্য ক্ষেত্রে)।</li>
@@ -305,16 +325,16 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>💼 EWS Certificate (আর্থিক অনগ্রসর শ্রেণী শংসাপত্র)</span>
+          <span>💼 ৮. EWS Certificate (আর্থিক অনগ্রসর শ্রেণী শংসাপত্র)</span>
         </div>
         <span class="arrow">▼</span>
       </div>
       <div class="notice-body">
         <h4>EWS শংসাপত্র এনকোয়ারি ও সুপারিশের জন্য প্রয়োজনীয় নথিপত্র:</h4>
-        <p>জেনারেল ক্যাটাগরির অর্থনৈতিকভাবে দুর্বল পরিবারের সংরক্ষণের শংসাপত্র পাওয়ার নিয়মাবলী:</p>
+        <p>জেনারেল ক্যাটাগরির অর্থনৈতিকভাবে দুর্বল পরিবারের সংরক্ষণের শংসাপত্র পাওয়ার নিয়মাবলী:</p>
         <ul>
-          <li>আবেদনকারী ও পরিবারের সকল সদস্যের আধার কার্ড ও ভোটার কার্ড।</li>
-          <li>পারিবারিক মোট বার্ষিক আয় ৮ লক্ষ টাকার নিচে হওয়ার স্বপক্ষে উপযুক্ত প্রমাণপত্র।</li>
+          <li>আবেদনকারী ও পরিবারের সকল সদস্যের ভোটার কার্ড ও পরিচয়পত্র।</li>
+          <li>পারিবারিক মোট বার্ষিক আয় ৮ লক্ষ টাকার নিচে হওয়ার স্বপক্ষে উপযুক্ত প্রমাণপত্র।</li>
           <li>বসতবাড়ি ও কৃষিজমির পরিমাণ সংক্রান্ত নথি (দলিল বা খতিয়ান/পর্চার জেরক্স)।</li>
           <li>আবেদনকারী তপশিলি জাতি (SC), উপজাতি (ST) বা ওবিসি (OBC) ভুক্ত নন মর্মে স্বঘোষিত ঘোষণাপত্র।</li>
           <li>চলতি আর্থিক বছরের পঞ্চায়েত ট্যাক্স পরিশোধের রসিদ।</li>
@@ -328,15 +348,15 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>🏛️ Domicile Certificate (স্থায়ী বাসিন্দার শংসাপত্র)</span>
+          <span>🏛️ ৯. Domicile Certificate (স্থায়ী বাসিন্দার শংসাপত্র)</span>
         </div>
         <span class="arrow">▼</span>
       </div>
       <div class="notice-body">
-        <h4>ডোমিসাইল শংসাপত্র (রাজ্য/জেলায় ন্যূনতম ১০ বছর বসবাসের প্রমাণ):</h4>
+        <h4>ডোমিসাইল শংসাপত্র (রাজ্য/জেলায় ন্যূনতম ১০ বছর বসবাসের প্রমাণ):</h4>
         <p>প্রতিরক্ষা বাহিনী, সরকারি চাকরি এবং বিভিন্ন ভর্তি পরীক্ষার ডোমিসাইল সুপারিশের জন্য জমা দিন:</p>
         <ul>
-          <li>আবেদনকারী ও পিতা-মাতার আধার কার্ড এবং ভোটার কার্ডের জেরক্স কপি।</li>
+          <li>আবেদনকারী ও পিতা-মাতার ভোটার কার্ড ও পরিচয়পত্রের জেরক্স কপি।</li>
           <li>আবেদনকারীর জন্ম শংসাপত্র বা স্কুল লিভিং সার্টিফিকেট / অ্যাডমিট কার্ড।</li>
           <li>পশ্চিমবঙ্গে বিগত ১০ বছর ধরে একটানা বসবাসের প্রমাণস্বরূপ জমির দলিল বা পরচা।</li>
           <li>গত ১০ বছরের পঞ্চায়েত ট্যাক্স রসিদ বা সংশ্লিষ্ট প্রমাণপত্র।</li>
@@ -351,7 +371,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Certificate</span>
-          <span>💍 Unmarried Certificate (অবিবাহিত শংসাপত্র) সংক্রান্ত নোটিশ</span>
+          <span>💍 ১০. Unmarried Certificate (অবিবাহিত শংসাপত্র) সংক্রান্ত নোটিশ</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -359,9 +379,9 @@ iframe{width:100%;height:380px;border:0;display:block}
         <h4>অবিবাহিত শংসাপত্র পাওয়ার জন্য প্রয়োজনীয় নিয়মাবলী:</h4>
         <p>সেনাবাহিনীতে নিয়োগ, বিশেষ স্কলারশিপ বা প্রশাসনিক কাজের জন্য অবিবাহিত প্রমাণপত্র পেতে জমা দিন:</p>
         <ul>
-          <li>আবেদনকারীর নিজস্ব আধার কার্ড এবং ভোটার কার্ডের জেরক্স কপি।</li>
+          <li>আবেদনকারীর নিজস্ব পরিচয়পত্র (ভোটার কার্ড ইত্যাদি)।</li>
           <li>বয়সের স্বপক্ষে বার্থ সার্টিফিকেট বা মাধ্যমিকের অ্যাডমিট কার্ডের জেরক্স।</li>
-          <li>পিতা বা অভিভাবকের আধার কার্ড এবং পারিবারিক পঞ্চায়েত ট্যাক্স রসিদ।</li>
+          <li>পিতা বা অভিভাবকের পরিচয়পত্র এবং পারিবারিক পঞ্চায়েত ট্যাক্স রসিদ।</li>
           <li>আবেদনকারী অবিবাহিত এই মর্মে নোটারি বা ফার্স্ট ক্লাস ম্যাজিস্ট্রেট এফিডেভিট (প্রয়োজনে)।</li>
           <li>স্থানীয় পঞ্চায়েত সদস্যের (Member) লিখিত সুপারিশপত্র।</li>
         </ul>
@@ -374,7 +394,7 @@ iframe{width:100%;height:380px;border:0;display:block}
       <div class="notice-header" onclick="toggleNotice(this)">
         <div>
           <span class="tag">Scheme</span>
-          <span>🕊️ সমব্যথী প্রকল্পের জন্য প্রয়োজনীয় নথি ও নির্দেশিকা</span>
+          <span>🕊️ ১১. সমব্যথী প্রকল্পের জন্য প্রয়োজনীয় নথি ও নির্দেশিকা</span>
         </div>
         <span class="arrow">▼</span>
       </div>
@@ -384,8 +404,8 @@ iframe{width:100%;height:380px;border:0;display:block}
         <ul>
           <li>বি.ডি.ও. (BDO) স্যারকে সম্বোধন করে আবেদন পত্র (আবেদন পত্রের ওপর পঞ্চায়েতের প্রধান এবং সেক্রেটারি বা এক্সিকিউটিভ অ্যাসিস্ট্যান্টের সই বাধ্যতামূলক)।</li>
           <li>মৃত ব্যক্তির ডেথ সার্টিফিকেট।</li>
-          <li>মৃত ব্যক্তির আধার কার্ড ও ভোটার কার্ডের জেরক্স।</li>
-          <li>আবেদনকারীর আধার কার্ড ও ভোটার কার্ডের জেরক্স।</li>
+          <li>মৃত ব্যক্তির পরিচয়পত্র ও ভোটার কার্ডের জেরক্স।</li>
+          <li>আবেদনকারীর পরিচয়পত্র ও ভোটার কার্ডের জেরক্স।</li>
           <li>পঞ্চায়েতের ট্যাক্সের রসিদের জেরক্স।</li>
           <li>মৃত ব্যক্তির সহিত আবেদনকারীর সম্পর্কের প্রমাণপত্র।</li>
           <li>আবেদনকারীর ব্যাঙ্ক অ্যাকাউন্টের প্রথম পাতার জেরক্স।</li>
@@ -415,9 +435,61 @@ iframe{width:100%;height:380px;border:0;display:block}
 </footer>
 
 <script>
+// একক নোটিশ খোলার বা বন্ধ করার ফাংশন
 function toggleNotice(header) {
   const item = header.parentElement;
   item.classList.toggle('active');
+}
+
+// লাইভ সার্চ ফাংশন
+function searchNotices() {
+  const input = document.getElementById('searchInput').value.toLowerCase().trim();
+  const noticeItems = document.querySelectorAll('.notice-item');
+  const noResults = document.getElementById('noResults');
+  let hasMatch = false;
+
+  noticeItems.forEach(item => {
+    const text = item.innerText.toLowerCase();
+    if (text.includes(input)) {
+      item.style.display = 'block';
+      hasMatch = true;
+      // সার্চ করা শব্দ থাকলে স্বয়ংক্রিয়ভাবে নোটিশটি খুলে দেখাবে
+      if (input !== '') {
+        item.classList.add('active');
+      }
+    } else {
+      item.style.display = 'none';
+      item.classList.remove('active');
+    }
+  });
+
+  // সার্চের লেখা মুছে ফেললে নোটিশগুলো আবার আগের অবস্থায় বন্ধ হয়ে যাবে
+  if (input === '') {
+    noticeItems.forEach(item => item.classList.remove('active'));
+  }
+
+  noResults.style.display = hasMatch ? 'none' : 'block';
+}
+
+// সব নোটিশ একসাথে খোলা বা বন্ধ করার ফাংশন
+let isAllOpen = false;
+function toggleAllNotices() {
+  const noticeItems = document.querySelectorAll('.notice-item');
+  const btn = document.getElementById('toggleAllBtn');
+  isAllOpen = !isAllOpen;
+
+  noticeItems.forEach(item => {
+    // শুধুমাত্র দৃশ্যমান নোটিশগুলোর উপর কাজ করবে
+    if (item.style.display !== 'none') {
+      if (isAllOpen) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    }
+  });
+
+  btn.innerText = isAllOpen ? "সব নোটিশ বন্ধ করুন" : "সব নোটিশ একসাথে খুলুন";
 }
 </script>
 
